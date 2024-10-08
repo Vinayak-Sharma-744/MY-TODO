@@ -1,4 +1,5 @@
-import express, { json } from 'express';
+import cors from 'cors';
+import express from 'express';
 import morgan from 'morgan';
 import { createTodo, updateTodo } from './validation/index.js';
 import Todo from './model/index.js';
@@ -6,6 +7,7 @@ import Todo from './model/index.js';
 const app = express();
 const port = 3000
 
+app.use(cors())
 app.use(express.json());
 app.use(morgan('dev'));
 
@@ -31,7 +33,7 @@ app.put('/mark-done', async(req, res) => {
 
   const update = await Todo.findOneAndUpdate(
     { _id: payload.id },
-    { $set : { completed: true } }
+    { $set : { isCompleted: true } }
   )
 
   return res.status(200).json({
@@ -56,7 +58,6 @@ app.post('/add-todos', async (req, res) => {
   const create = await Todo.create({
     title: payload.title,
     description: payload.description,
-    completed: false
   });
 
   return res.status(200).json({
